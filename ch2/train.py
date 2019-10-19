@@ -19,7 +19,7 @@ for line in csv.split("\n"):
 x_train, x_test, y_train, y_test = train_test_split(X, Y)
 
 # 学習
-cls = svm.SVC(gamma="scale")
+cls = svm.SVC(gamma=0.001)
 cls.fit(x_train, y_train)
 
 # 評価
