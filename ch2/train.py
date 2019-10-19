@@ -10,8 +10,8 @@ with open("bodydata.csv", "rt") as f:
 for line in csv.split("\n"):
     cells = line.split(",")
     if len(cells) < 3: continue
-    kg = cells[0]
-    cm = cells[1]
+    kg = float(cells[0])
+    cm = float(cells[1])
     result = cells[2]
     X.append([kg, cm])
     Y.append(result)
