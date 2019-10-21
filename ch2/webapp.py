@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import pickle
 from sklearn import svm
 from flask import Flask, request
@@ -43,6 +42,6 @@ def html(body):
 
 # 起動
 if __name__ == "__main__":
-    app.run(debug=True, port=8888)
+    app.run(debug=True, port=8888, host='0.0.0.0')
 
 
