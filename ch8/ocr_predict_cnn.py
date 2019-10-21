@@ -2,7 +2,7 @@ import sys, math, cv2, pprint
 import numpy as np
 import chainer
 import chainer.functions as F
-import ocr_mlp as ocr
+import ocr_network as ocr
 
 # ラベルを取得し、ラベル番号:文字コードに直す
 all_labels = np.load('ocr-label.npy').tolist()
