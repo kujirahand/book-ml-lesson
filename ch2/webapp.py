@@ -1,11 +1,17 @@
 import pickle
 from sklearn import svm
 from flask import Flask, request
+
+# 肥満判定の機械学習モデルを読む --- (*1)
+FILE_MODEL = "bodydata_model.sav" 
+cls = pickle.load(open(FILE_MODEL, 'rb'))
+
+# FlaskでWebアプリを作成 --- (*2)
 app = Flask(__name__)
 
 @app.route('/')
-def root():
-    # HTMLフォームを表示
+def app_root():
+    # HTMLフォームを表示 --- (*3)
     return html("""
     <div><form action="/check">
     体重(kg): <input name='kg'><br>
@@ -15,14 +21,11 @@ def root():
     """)
 
 @app.route('/check')
-def check():
-    # パラメータを読む
+def app_check():
+    # 受信したフォーム引数を読む --- (*4)
     kg = request.args.get("kg")
     cm = request.args.get("cm")
-    # 作成したモデルを読み込む --- (*1)
-    FILE_MODEL = "bodydata_model.sav" 
-    cls = pickle.load(open(FILE_MODEL, 'rb'))
-    # 予測して結果を表示 --- (*2)
+    # 予測して結果を表示 --- (*5)
     y_pred = cls.predict([[kg, cm]])
     return html("""
     <h1>{}kg {}cm→{}</h1>
@@ -40,8 +43,6 @@ def html(body):
     """ + body + """
     </body></html>"""
 
-# 起動
 if __name__ == "__main__":
-    app.run(debug=True, port=8888, host='0.0.0.0')
-
-
+    # Webサーバーを起動
+    app.run(port=8888, host='0.0.0.0')
