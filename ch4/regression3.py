@@ -22,7 +22,7 @@ test_target = test_target[:,0]
 
 # モデルを学習
 clf = neural_network.MLPRegressor(
-        hidden_layer_sizes=(5, 5), max_iter=1000)
+        hidden_layer_sizes=(5, 5), max_iter=10000)
 clf.fit(train_data, train_target)
 
 # モデルの検証
