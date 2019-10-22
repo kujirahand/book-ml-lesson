@@ -27,11 +27,11 @@ for train_idx, test_idx in model_selection.KFold(n_splits=splits).split(iris.dat
 	test_target = iris.target[test_idx]
 
 	# モデルを学習
-	clf1 = svm.LinearSVC()
+	clf1 = svm.LinearSVC(max_iter=10000)
 	clf1.fit(train_data, train_target)
-	clf2 = svm.SVC(kernel='poly', degree=3)
+	clf2 = svm.SVC(kernel='poly', degree=3, gamma='scale')
 	clf2.fit(train_data, train_target)
-	clf3 = svm.SVC(kernel='rbf')
+	clf3 = svm.SVC(kernel='rbf', gamma='scale')
 	clf3.fit(train_data, train_target)
 	clf4 = neighbors.KNeighborsClassifier(n_neighbors=6)
 	clf4.fit(train_data, train_target)

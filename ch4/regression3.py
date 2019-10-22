@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from sklearn import datasets
 from sklearn import model_selection
-from sklearn import ensemble
+from sklearn import neural_network
 
 # irisデータセット
 iris = datasets.load_iris()
@@ -12,14 +12,17 @@ target = iris.data[:,3:4]
 
 # 訓練データとテストデータに分割
 train_data, test_data, train_target, test_target \
-	= model_selection.train_test_split(data, target, test_size=0.3, random_state=1)
+	= model_selection.train_test_split(
+                data, target, 
+                test_size=0.3, random_state=1)
 
 # 配列の次元数を変更
 train_target = train_target[:,0]
 test_target = test_target[:,0]
 
 # モデルを学習
-clf = ensemble.RandomForestRegressor(n_estimators=100)
+clf = neural_network.MLPRegressor(
+        hidden_layer_sizes=(5, 5), max_iter=1000)
 clf.fit(train_data, train_target)
 
 # モデルの検証
