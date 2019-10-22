@@ -9,6 +9,8 @@ def get_image():
     for fname in files:
         # 情報ファイルは飛ばす
         if fname == "ETL1/ETL1INFO": continue
+        if fname == "ETL1/README.md": continue
+        print("read - " + fname)
         # ETL1のデータファイルを開く
         f = open(fname, 'rb')
         f.seek(0)
