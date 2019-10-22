@@ -4,13 +4,23 @@ import os, random, chainer
 from chainer import training, datasets, iterators, optimizers
 from chainer.training import extensions
 import chainer.links as L
+
+# 画像の回転を使うかどうか
+USE_ROTATE_IMAGE = False
+
 # GPUを使用する場合のみ
-import cupy as xp
-import chainer.cuda
-# GPU#0を使う
-chainer.cuda.get_device_from_id(0).use()
-## GPUを使用しない場合
-## import numpy as xp
+USE_GPU = False
+if USE_GPU:
+    import cupy as xp
+    import chainer.cuda
+    # GPU利用時のメモリエラーを防ぐ
+    pool = xp.cuda.MemoryPool(xp.cuda.malloc_managed)
+    xp.cuda.set_allocator(pool.malloc)
+    # GPU#0を使う
+    chainer.cuda.get_device_from_id(0).use()
+else:
+    # GPUを使用しない場合
+    import numpy as xp
 
 # ETL1のデータを読むためのライブラリ
 import etl1
@@ -41,10 +51,17 @@ def image_to_data(image, code):
 # 画像を読み取る
 for i, cur in enumerate(etl1.get_image()):
     image, code = cur
-    # 角度を変えて登録する
-    for rad in range(-5, 6):
-        im_r = image.rotate(rad)
-        data = image_to_data(im_r, code)
+    if USE_ROTATE_IMAGE:
+        # 角度を変えて登録する
+        for rad in range(-2, 3, 2):
+            im_r = image.rotate(rad)
+            data = image_to_data(im_r, code)
+            if i % 10 != 0:
+                ocr_dataset.append(data)
+            else:
+                test_ocr_dataset.append(data)
+    else:
+        data = image_to_data(image, code)
         if i % 10 != 0:
             ocr_dataset.append(data)
         else:
@@ -63,18 +80,24 @@ test_iter = iterators.SerialIterator(test_ocr_dataset, batch_size, repeat=False)
 # ニューラルネットワークのモデルを作成
 ocr_net = ocr.OCR_NN(len(all_labels))
 model = L.Classifier(ocr_net)
-model.to_gpu()  # GPUを使用する場合のみ
+if USE_GPU:
+    model.to_gpu()  # GPUを使用する場合のみ
 # 学習アルゴリズムの選択
 optimizer = chainer.optimizers.RMSpropGraves()
 optimizer.setup(model)
 # GPU#0を使用して学習モデルを作成
-updater = training.StandardUpdater(train_iter, optimizer, device=0)
-updater = training.StandardUpdater(train_iter, optimizer)
+if USE_GPU:
+    updater = training.StandardUpdater(train_iter, optimizer, device=0)
+else:
+    updater = training.StandardUpdater(train_iter, optimizer)
 # 25エポック分学習させる
 trainer = training.Trainer(updater, (25, 'epoch'), out="result")
 # GPU#0を使用してテストを実行
-trainer.extend(extensions.Evaluator(test_iter, model, device=0))
-trainer.extend(extensions.Evaluator(test_iter, model))
+if USE_GPU:
+    trainer.extend(extensions.Evaluator(test_iter, model, device=0))
+else:
+    trainer.extend(extensions.Evaluator(test_iter, model))
+
 # 学習の進展を表示するようにする
 trainer.extend(extensions.LogReport())
 trainer.extend(extensions.ProgressBar(update_interval=10))
