@@ -52,17 +52,17 @@ def mk_clusters(name, clf):
 	pr_score1 = metrics.precision_score(score_data[0], score_target[0])
 	pr_score2 = metrics.precision_score(score_data[1], score_target[1])
 	pr_score3 = metrics.precision_score(score_data[2], score_target[2])
-	print('Precision score: '+str((pr_score1 + pr_score2 + pr_score3) / 3.0))
+	print('Precision score: ' + str((pr_score1 + pr_score2 + pr_score3) / 3.0))
 	# 再現率を取得する
 	rc_score1 = metrics.recall_score(score_data[0], score_target[0])
 	rc_score2 = metrics.recall_score(score_data[1], score_target[1])
 	rc_score3 = metrics.recall_score(score_data[2], score_target[2])
-	print('Recall score: '+str((rc_score1 + rc_score2 + rc_score3) / 3.0))
+	print('Recall score: ' + str((rc_score1 + rc_score2 + rc_score3) / 3.0))
 	# F1値を取得する
 	f1_score1 = metrics.f1_score(score_data[0], score_target[0])
 	f1_score2 = metrics.f1_score(score_data[1], score_target[1])
 	f1_score3 = metrics.f1_score(score_data[2], score_target[2])
-	print('F1 score: '+str((f1_score1 + f1_score2 + f1_score3) / 3.0)+'\n')
+	print('F1 score: ' + str((f1_score1 + f1_score2 + f1_score3) / 3.0)+'\n')
 
 
 # MiniBatchKMeans法
